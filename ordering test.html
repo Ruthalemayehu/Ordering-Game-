@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ordering Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+            background-color: #f4e3cd;
+        }
+        .button {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            margin: 10px;
+            border: 2px solid #ccc;
+            border-radius: 50%;
+            font-size: 24px;
+            line-height: 50px;
+            text-align: center;
+            cursor: grab;
+        }
+        .blank-space {
+            display: inline-block;
+            align-items: center;
+            justify-content: space-around;
+            width: 100px;
+            height: 100px;
+            margin: 10px;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #blank-space-1 { background-color: #F8991C; }
+        #blank-space-2 { background-color: #FFC519; }
+        #blank-space-3 { background-color: #4Dc5d6; }
+        #blank-space-4 { background-color: #81c341; }
+        #blank-space-5 { background-color: #E24B9A; }
+        #blank-space-6 { background-color: #FFC519; }
+        #blank-space-7 { background-color: #F8991C; }
+        #button-A { background-color: #FFBB70; }
+        #button-B{ background-color: #FFB1B1; }
+        #button-C{ background-color: #FFFBDA; }
+        #button-D{ background-color: #A3D8FF; }
+        #button-E { background-color: #94FFD8; }
+        #button-F{ background-color: #FFBB70; }
+        #button-G { background-color: #FFB1B1; }
+
+        .drop-container-button {
+            margin-top: 20px;
+            padding: 15px 30px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #fff;
+            background-color: #ff80b0;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            outline: none;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <h1>ፊደሎቹን በቦታቸው ደርድሯቸው</h1>
+
+    <div class="container">
+          <div class="row">
+            <button id="button-C" class="button" draggable="true" data-audio="https://dl.dropboxusercontent.com/scl/fi/qu2o03ousx5a7uk00bx9u/.mp3?rlkey=8a9iigfgd3yfafh7io7tle977&st=3vql0znl&dl=0">ዲ</button>
+            <button id="button-B" class="button" draggable="true" data-audio="https://dl.dropboxusercontent.com/scl/fi/4jaur1y6oe7fxsslbzj8g/.mp3?rlkey=n41xxtrfemzvvt47rkw5thm9f&st=l8rgcbwj&dl=0">ዱ</button>
+            <button id="button-D" class="button" draggable="true" data-audio="https://dl.dropboxusercontent.com/scl/fi/n5ftnq7bsvmde5slmk6qx/.mp3?rlkey=gwcxvxqwz8laxe2axehth8csp&st=1lft0m8w&dl=0">ዳ</button>
+            <button id="button-G" class="button" draggable="true" data-audio="https://dl.dropboxusercontent.com/scl/fi/60m4smaf9qlo9yxv9fpuo/.mp3?rlkey=zg5nrye8fx9j0sh7jraox606u&st=ajkpmvie&dl=0">ዶ</button>
+            <button id="button-E" class="button" draggable="true" data-audio="https://dl.dropboxusercontent.com/scl/fi/7at7j7esjy7i8cno1f9fd/.mp3?rlkey=ssp8k7zub6e8driilp21jm8lc&st=53ji6cdg&dl=0">ዴ</button>
+            <button id="button-A" class="button" draggable="true" data-audio="https://dl.dropboxusercontent.com/scl/fi/691pmrhv1o3cqt5h431hz/.mp3?rlkey=jgz2wednuhjiicueod1vwa7dq&st=c7if60g0&dl=0">ደ</button>
+            <button id="button-F" class="button" draggable="true" data-audio="https://dl.dropboxusercontent.com/scl/fi/ocli4h288ncs2i2noq49j/.mp3?rlkey=1lihdf4gb30c7t6r3t8hutvcb&st=4u52c1ir&dl=0">ድ</button>
+        </div>
+
+        <div class="row">
+            <div id="blank-space-1" class="blank-space">1</div>
+            <div id="blank-space-2" class="blank-space">2</div>
+            <div id="blank-space-3" class="blank-space">3</div>
+            <div id="blank-space-4" class="blank-space">4</div>
+            <div id="blank-space-5" class="blank-space">5</div>
+            <div id="blank-space-6" class="blank-space">6</div>
+            <div id="blank-space-7" class="blank-space">7</div>
+        </div>
+        <button class="drop-container-button" onclick="checkOrder()">መልስ</button>
+    </div>
+
+    <script>
+        function dragStart() {
+            this.classList.add('dragging');
+            const audioUrl = this.dataset.audio;
+            const audio = new Audio(audioUrl);
+            this.audio = audio;  // Store the audio object on the element
+        }
+
+        function dragEnd() {
+            this.classList.remove('dragging');
+            const allAudio = document.querySelectorAll('audio');
+            allAudio.forEach(element => element.pause());
+            if (this.audio) {
+                this.audio.play();
+            }
+        }
+
+        function dragOver(e) {
+            e.preventDefault();
+        }
+
+        function dragEnter(e) {
+            e.preventDefault();
+            this.classList.add('hovered');
+        }
+
+        function dragLeave() {
+            this.classList.remove('hovered');
+        }
+
+        function drop() {
+            const draggingButton = document.querySelector('.dragging');
+            if (draggingButton) {
+                this.appendChild(draggingButton);
+                this.classList.remove('hovered');
+            }
+        }
+
+        const letterButtons = document.querySelectorAll('.button');
+        const blankSpaces = document.querySelectorAll('.blank-space');
+
+        letterButtons.forEach(button => {
+            button.addEventListener('dragstart', dragStart);
+            button.addEventListener('dragend', dragEnd);
+        });
+
+        blankSpaces.forEach(space => {
+            space.addEventListener('dragover', dragOver);
+            space.addEventListener('dragenter', dragEnter);
+            space.addEventListener('dragleave', dragLeave);
+            space.addEventListener('drop', drop);
+        });
+
+        function checkOrder() {
+            const buttonIds = Array.from(blankSpaces).map(space => {
+                const button = space.querySelector('.button');
+                return button ? button.id : null;
+            });
+
+            const correctOrder = ['button-A', 'button-B', 'button-C', 'button-D', 'button-E', 'button-F', 'button-G'];
+            let isCorrect = true;
+
+            buttonIds.forEach((id, index) => {
+                const target = blankSpaces[index];
+                if (id !== correctOrder[index]) {
+                    isCorrect = false;
+                    target.style.borderColor = 'red';
+                } else {
+                    target.style.borderColor = '#ccc';
+                }
+            });
+
+            if (isCorrect) {
+                createBoldPopup('እንኳን ደስ አላችሁ! ፊደላቱን በትክክል ደርድራቸሁታል።', 'green', true);
+            } else {
+                createBoldPopup('እንደገና ሞክሩ፤ አንዳንድ ፊደላት በትክክለኛ ቅደም ተከተል አልተቀመጡም።', 'red', false);
+                resetIncorrectPlacements();
+            }
+        }
+
+        function resetIncorrectPlacements() {
+            const letterContainer = document.querySelector('.container > .row:first-child');
+            const correctOrder = ['button-A', 'button-B', 'button-C', 'button-D', 'button-E', 'button-F', 'button-G'];
+
+            blankSpaces.forEach(space => {
+                const button = space.querySelector('.button');
+                if (button && button.id !== correctOrder[Array.from(blankSpaces).indexOf(space)]) {
+                    // Highlight incorrect button
+                    button.style.borderColor = 'red';
+                    // Move the incorrect button back to the letter container after a short delay
+                    setTimeout(() => {
+                        letterContainer.appendChild(button);
+                        button.style.borderColor = '#ccc'; // Reset border color
+                        space.style.borderColor = '#ccc'; // Reset border color for the blank space
+                    }, 1000);
+                }
+            });
+        }
+
+        function createBoldPopup(message, color, redirect) {
+            const modalContainer = document.createElement('div');
+            modalContainer.style.position = 'fixed';
+            modalContainer.style.top = '0';
+            modalContainer.style.left = '0';
+            modalContainer.style.width = '100%';
+            modalContainer.style.height = '100%';
+            modalContainer.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+            modalContainer.style.display = 'flex';
+            modalContainer.style.justifyContent = 'center';
+            modalContainer.style.alignItems = 'center';
+            document.body.appendChild(modalContainer);
+
+            const messageElement = document.createElement('div');
+            messageElement.textContent = message;
+            messageElement.style.color = color;
+            messageElement.style.fontSize = '24px';
+            messageElement.style.fontWeight = 'bold';
+            messageElement.style.padding = '20px';
+            messageElement.style.backgroundColor = '#fff';
+            messageElement.style.borderRadius = '10px';
+            modalContainer.appendChild(messageElement);
+
+            setTimeout(() => {
+                modalContainer.remove();
+                if (redirect) {
+                    window.location.href = 'https://www.tibebgirls.com/path-player?courseid=tll-courses&unit=664c4e56e92b18152a04ebecUnit';
+                }
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
